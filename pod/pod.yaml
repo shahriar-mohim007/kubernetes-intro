@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+  labels:
+    role: web-server
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx:latest
+      imagePullPolicy: IfNotPresent
+      ports:
+        - name: http-port
+          containerPort: 80
+          protocol: TCP
+      resources:
+        limits:
+          memory: "512Mi"
+          cpu: "500m"
+        requests:
+          memory: "256Mi"
+          cpu: "250m"
+      env:
+        - name: ENVIRONMENT
+          value: "production"
+  restartPolicy: Always
+
+
+
+
+#In Kubernetes, the resources section is used to manage the allocation of CPU and memory for containers running inside Pods. It defines two main aspects: requests and limits.
+#
+#  limits: This specifies the maximum amount of resources a container is allowed to use. If the container tries to exceed these limits, it could be throttled or terminated (in the case of memory limits, it could be killed with an "out of memory" error).
+#    memory: In this case, the container is allowed to use up to 512Mi (512 Mebibytes) of memory. If the container exceeds this amount, it will be terminated or throttled.
+#    cpu: The container is allowed to use up to 500m (500 milli-CPUs), which is equivalent to half of a single CPU core. If the container tries to use more CPU resources than this, Kubernetes will throttle the container.
+#
+#  requests: This specifies the amount of resources that Kubernetes will guarantee for the container. These are the resources that Kubernetes will reserve for the container when scheduling it onto a node. Requests are used to determine how the container is scheduled and the resources it is initially allocated.
+#    memory: The container will be allocated at least 256Mi (256 Mebibytes) of memory. Kubernetes ensures that at least this amount of memory is available for the container, even if other containers in the same Pod or on the same node need resources.
+#    cpu: The container will be allocated at least 250m (250 milli-CPUs), which is one-quarter of a CPU core. Kubernetes ensures that at least this amount of CPU will be available for the container.
+
+#kubectl port-forward myapp-pod 8080:80
+
+#Breakdown:
+#
+#  myapp-pod: This is the name of the pod you want to forward the port from. This pod should be running in your Kubernetes cluster.
+#
+#  8080:80: This specifies the port mapping:
+#             Local port (8080): The port on your local machine (the machine where you’re running the kubectl command) that you want to forward the traffic to.
+#             Pod port (80): The port inside the pod that is exposed by the container(s). In this case, port 80, which is typically used for HTTP services, is being forwarded from the pod.
+#
+#How it works:
+#
+#  Forwarding Traffic:
+#    When you run kubectl port-forward myapp-pod 8080:80, Kubernetes will listen on port 8080 on your local machine.
+#    Any incoming requests on http://localhost:8080 will be forwarded to port 80 inside the myapp-pod in your Kubernetes cluster.
+#
+#  Accessing the Application:
+#    For example, if the pod is running a web server (like Nginx) on port 80, you can open a browser and access it via http://localhost:8080 on your local machine.
+#    The kubectl command forwards your local requests to the pod’s internal port (in this case, port 80).
+#
+#  Temporary Tunnel:
+#    The port-forwarding process creates a temporary connection (tunnel) between your local machine and the pod in the cluster.
+#    This tunnel remains open as long as the kubectl port-forward command is running in the terminal. Once you stop the command (press Ctrl + C), the tunnel is closed, and the port forwarding stops.
