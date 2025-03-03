@@ -61,3 +61,7 @@ spec:
 #  Temporary Tunnel:
 #    The port-forwarding process creates a temporary connection (tunnel) between your local machine and the pod in the cluster.
 #    This tunnel remains open as long as the kubectl port-forward command is running in the terminal. Once you stop the command (press Ctrl + C), the tunnel is closed, and the port forwarding stops.
+
+#kubectl describe pod myapp-pod | grep -i image
+#kubectl logs myapp-pod
+#kubectl get pods -o wide
